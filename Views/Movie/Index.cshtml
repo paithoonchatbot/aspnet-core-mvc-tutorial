@@ -1,0 +1,96 @@
+@model IEnumerable<demo_mvc.Models.Movie>
+@{ 
+  ViewData["Title"] = "Movie Index Page"; 
+  var defaultSortOrder = "asc"; 
+  @* if
+  (Context.Request.Query["order"].ToString() == "asc") { defaultSortOrder =
+  "desc"; } *@ 
+  if (Context.Request.Method == "POST" &&
+  Context.Request.Form["order"].ToString() == "asc") { 
+      defaultSortOrder = "desc"; 
+  } 
+}
+
+  <h4>All Movies</h4>
+
+  <div class="alert">
+    You click @ViewData["lastClick"]
+  </div>
+
+  <div class="row">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>
+            @*
+            <a asp-route-sort="id" asp-route-order="@defaultSortOrder">
+              @Html.DisplayNameFor(m => m.Id)
+            </a>
+            *@
+            <form method="post">
+              <input type="hidden" name="sort" value="id" />
+              <input type="hidden" name="order" value="@defaultSortOrder" />
+              <input
+                type="hidden"
+                name="specialData"
+                value="@DateTime.Now.ToString()"
+              />
+              <input
+                type="submit"
+                value="@Html.DisplayNameFor(m => m.Id)"
+                class="btn btn-link"
+              />
+            </form>
+          </th>
+          <th>
+            <a asp-route-sort="title" asp-route-order="@defaultSortOrder">
+              @Html.DisplayNameFor(m => m.Title)
+            </a>
+          </th>
+          <th>
+            <a asp-route-sort="releaseDate" asp-route-order="@defaultSortOrder">
+              @Html.DisplayNameFor(m => m.ReleaseDate)
+            </a>
+          </th>
+          <th>
+            <a asp-route-sort="genre" asp-route-order="@defaultSortOrder">
+              @Html.DisplayNameFor(m => m.Genre)
+            </a>
+          </th>
+          <th>
+            <a asp-route-sort="price" asp-route-order="@defaultSortOrder">
+              @Html.DisplayNameFor(m => m.Price)
+            </a>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var movie in Model) {
+        <tr>
+          <td>@movie.Id</td>
+          <td>@movie.Title</td>
+          <td>@Html.DisplayFor(m => movie.ReleaseDate)</td>
+          <td>@Html.DisplayFor(m => movie.Genre)</td>
+          <td>@Html.DisplayFor(m => movie.Price)</td>
+          <td>
+            <form asp-action="DeleteMovie" method="post">
+              <input type="hidden" name="movieId" value="@movie.Id" />
+              <input type="submit" class="btn btn-danger" value="ลบ" />
+            </form>
+            @*
+            <a
+              asp-controller="Movie"
+              asp-action="Index"
+              asp-route-movieId="@movie.Id"
+              class="btn btn-primary"
+              >ลบ</a
+            >
+            *@
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</demo_mvc.Models.Movie>
